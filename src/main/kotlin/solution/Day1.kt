@@ -1,10 +1,8 @@
 package solution
 
 import util.getInputAsIntArray
-import util.getInputAsText
-import java.lang.reflect.Proxy
 
-fun level1(): Int {
+fun level1_1(): Int {
     val input = getInputAsIntArray(1)
 
     val res = input
@@ -14,7 +12,7 @@ fun level1(): Int {
     return res
 }
 
-fun level2(): Int {
+fun level1_2(): Int {
     val input = getInputAsIntArray(1)
 
     val windows = mutableMapOf<Int, MutableList<Int>>()
@@ -39,6 +37,6 @@ fun level2(): Int {
 
 
 fun main() {
-    println(level1());
-    println(level2());
+    println(level1_1());
+    println(level1_2());
 }
