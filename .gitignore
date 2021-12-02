@@ -1,6 +1,6 @@
 
 ### CUSTOM ###
-src/main/resources/inputs/**
+src/main/resources/inputs/day*.txt
 
 # Created by https://www.toptal.com/developers/gitignore/api/kotlin
 # Edit at https://www.toptal.com/developers/gitignore?templates=kotlin
