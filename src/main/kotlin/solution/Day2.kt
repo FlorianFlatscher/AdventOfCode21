@@ -6,7 +6,7 @@ import java.lang.Exception
 data class Position(val x: Int, val depth: Int, val aim: Int)
 data class MoveCommand(val direction: String, val steps: Int)
 
-fun level2() {
+private fun level2() {
     val input = getInputAsText(2)
         .lines()
         .map { line ->

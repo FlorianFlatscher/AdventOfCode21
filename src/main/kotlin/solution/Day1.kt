@@ -2,7 +2,7 @@ package solution
 
 import util.getInputAsIntArray
 
-fun level1_1(): Int {
+private fun level1(): Int {
     val input = getInputAsIntArray(1)
 
     val res = input
@@ -12,7 +12,7 @@ fun level1_1(): Int {
     return res
 }
 
-fun level1_2(): Int {
+private fun level2(): Int {
     val input = getInputAsIntArray(1)
 
     val windows = mutableMapOf<Int, MutableList<Int>>()
@@ -37,6 +37,6 @@ fun level1_2(): Int {
 
 
 fun main() {
-    println(level1_1());
-    println(level1_2());
+    println(level1());
+    println(level1());
 }
