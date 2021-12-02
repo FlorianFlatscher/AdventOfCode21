@@ -1,4 +1,7 @@
 
+### CUSTOM ###
+src/main/resources/inputs/**
+
 # Created by https://www.toptal.com/developers/gitignore/api/kotlin
 # Edit at https://www.toptal.com/developers/gitignore?templates=kotlin
 
