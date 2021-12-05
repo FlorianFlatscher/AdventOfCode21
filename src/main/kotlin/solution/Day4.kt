@@ -5,7 +5,7 @@ import util.getInputAsText
 data class Board(val values: List<List<Int>>, val marked: MutableList<MutableList<Boolean>>)
 
 
-fun solve1() {
+private fun solve1() {
     val input = getInputAsText(4)
     val moves = input.lines()[0].split(",").map { it.toInt() }
 
@@ -58,7 +58,7 @@ fun solve1() {
     println(sum * lastNumber)
 }
 
-fun solve2() {
+private fun solve2() {
     val input = getInputAsText(4)
     val moves = input.lines()[0].split(",").map { it.toInt() }
 
@@ -105,7 +105,7 @@ fun solve2() {
     println(sum * lastNumber)
 }
 
-fun isBoardComplete (board: Board): Boolean {
+private fun isBoardComplete (board: Board): Boolean {
     return board.marked.any { it.all { it } } ||
             board.marked.reduce { acc, curr ->
                 acc.mapIndexed { index, b ->

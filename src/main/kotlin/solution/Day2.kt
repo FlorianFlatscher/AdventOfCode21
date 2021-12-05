@@ -3,8 +3,8 @@ package solution
 import util.getInputAsText
 import java.lang.Exception
 
-data class Position(val x: Int, val depth: Int, val aim: Int)
-data class MoveCommand(val direction: String, val steps: Int)
+private data class Position(val x: Int, val depth: Int, val aim: Int)
+private data class MoveCommand(val direction: String, val steps: Int)
 
 private fun level2() {
     val input = getInputAsText(2)
