@@ -1,4 +1,4 @@
-package solution
+package solution.day5
 
 import util.getInputAsText
 import kotlin.math.abs

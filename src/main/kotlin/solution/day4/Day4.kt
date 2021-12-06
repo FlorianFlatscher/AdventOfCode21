@@ -1,4 +1,4 @@
-package solution
+package solution.day4
 
 import util.getInputAsText
 
