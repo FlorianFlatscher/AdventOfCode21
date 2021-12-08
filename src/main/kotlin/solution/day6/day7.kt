@@ -4,7 +4,7 @@ import util.getInputAsText
 import java.util.*
 
 
-fun solve1() {
+private fun solve1() {
     val input = getInputAsText(6).split(",").map { it.toInt() }
     val fishPod = LongArray(9)
 
