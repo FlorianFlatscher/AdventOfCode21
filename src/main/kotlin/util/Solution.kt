@@ -18,10 +18,21 @@ object Solution {
     private var levelCount: Int = 1
     private val greetedDay = mutableSetOf<Int>()
 
-    fun run(day: Int, func: () -> Any?) {
+    fun run(day: Int, func: () -> Any?, debug: Int = 0, ) {
         ensureInputsAreCreated(day)
         printGreeting(day)
 
+        if (debug == 1) {
+            currentInputFile = getSampleInputFileName(day)
+            func()
+            return
+        }
+
+        if (debug == 2) {
+            currentInputFile = getRealInputFileName(day)
+            func()
+            return
+        }
         val solution = getSolutions(day).getOrNull(levelCount - 1)
 
         currentInputFile = getSampleInputFileName(day)
