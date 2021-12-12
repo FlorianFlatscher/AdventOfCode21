@@ -1,114 +1,135 @@
 package util
 
+import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.*
+import kotlin.io.path.Path
 import kotlin.system.exitProcess
-import kotlin.text.StringBuilder
+
+const val inputFolderName = "inputs"
+
+private fun getSampleInputFileName(day: Int) = "day${day}_sample.txt"
+private fun getSampleExpectedFileName(day: Int) = "day${day}_expected.txt"
+private fun getRealInputFileName(day: Int) = "day${day}_real.txt"
 
 object Solution {
-    private var lastRegisteredDay: Int? = null
+    private var currentInputFile: String? = null
+    private var levelCount: Int = 1
+    private val greetedDay = mutableSetOf<Int>()
 
-    fun registerForDay(day: Int, func: () -> Unit) {
-        lastRegisteredDay = day
+    fun run(day: Int, func: () -> Any?) {
+        ensureInputsAreCreated(day)
         printGreeting(day)
 
-        print("example output: ")
-        func()
+        val solution = getSolutions(day).getOrNull(levelCount - 1)
 
-        print("real output: ")
-        func()
-        println("")
-    }
+        currentInputFile = getSampleInputFileName(day)
+        val res1 = func()
+        currentInputFile = getRealInputFileName(day)
+        val res2 = func()
 
-    private val inputFileIterator = generateSequence(0) { it + 1 }.map {
-        if (it % 2 == 0) {
-            "day${lastRegisteredDay!!}_sample.txt"
-        } else {
-            "day${lastRegisteredDay!!}_real.txt"
+        var checkResult = "NO EXPECTED OUTPUT FOUND"
+        var error = false
+        var success = false
+        if (solution != null) {
+            checkResult =
+                if (solution.toString() == res1.toString()) "${ConsoleColors.GREEN + ConsoleColors.BLACK_BACKGROUND_BRIGHT}✅".also{success = true} else "❌".also { error = true }
         }
-    }.iterator()
+
+        println("${ConsoleColors.BLACK_BACKGROUND_BRIGHT} Level $levelCount $checkResult")
+        println("${ConsoleColors.RESET} sample output: ${if (error) ConsoleColors.RED else ConsoleColors.RESET}$res1${ConsoleColors.RESET}")
+
+        println(" real output:   ${if (success) ConsoleColors.PURPLE else ConsoleColors.RESET}$res2${ConsoleColors.RESET}")
+        println("")
+
+        levelCount++;
+    }
 
     fun getInputAsText(): String {
-        if (!inputFileIterator.hasNext()) {
-            throw IllegalStateException("All inputs for this day where already consumed")
-        }
-        val fileName = inputFileIterator.next()
-        var inputRes = getResource("./inputs/$fileName")
-
-        if (inputRes == null) {
-            var inputFolder = getResource("./inputs/")
-            if (inputFolder == null) {
-                val source = Paths.get(getResource("/")!!.toURI())
-                Files.createDirectory(
-                    Paths.get(
-                        source.toAbsolutePath().toString().replace("build/resources/main", "src/main/resources")
-                            .replace("build\\resources\\main", "src\\main\\resources")
-                    )
-                )
-                Files.createDirectory(Paths.get(source.toAbsolutePath().toString()))
-                inputFolder = getResource("./inputs/")!!
-            }
-            val source = Paths.get(inputFolder.toURI())
-            Files.createFile(
-                Paths.get(
-                    source.toAbsolutePath().toString().replace("build/resources/main", "src/main/resources")
-                        .replace("build\\resources\\main", "src\\main\\resources"), fileName
-                )
-            )
-            Files.createFile(Paths.get(source.toAbsolutePath().toString(), fileName))
-            inputRes = getResource("./inputs/$fileName")!!
-        }
-        val text = inputRes.readText()
-        if (text.isEmpty()) {
-            println("${ConsoleColors.RED}fill $fileName${ConsoleColors.RESET}")
-            exitProcess(0)
-        }
-
-        return text.trim()
+        return getResourceAsText("${inputFolderName}/${currentInputFile}").trim()
     }
 
-    private val greetedDay = mutableSetOf<Int>()
+    private fun getSolutions(day: Int): List<String> {
+        return getResource("$inputFolderName/${getSampleExpectedFileName(day)}")!!.readText().trim().lines()
+    }
+
+    private fun ensureInputsAreCreated(day: Int) {
+        val inputFolder = getInputFolder()
+
+        val inputs = listOf(
+            getSampleInputFileName(day),
+            getSampleExpectedFileName(day),
+            getRealInputFileName(day)
+        )
+
+        val inputResources = inputs.map { getResource("$inputFolderName/$it") }
+
+        if (inputResources.all { it != null && it.readText().isNotEmpty() }) {
+            return
+        }
+
+        inputs.forEach {
+            val res = getResource("$inputFolderName/$it")
+
+            if (res == null) {
+                Files.createFile(Path("${inputFolder.path.trimStart('/')}/$it"))
+            }
+
+            if (res == null || res.readText().isEmpty()) {
+                println("${ConsoleColors.GREEN}fill ${inputFolder.path.trimStart('/')}/$it${ConsoleColors.RESET}")
+            }
+        }
+
+        exitProcess(0)
+    }
+
+    private fun getInputFolder(): URL {
+        val inputFolder = getResource(inputFolderName)
+        if (inputFolder != null) {
+            return inputFolder
+        }
+
+        val outputResources = Paths.get(getResource("/")!!.toURI()).toAbsolutePath().toString()
+        Files.createDirectory(Paths.get(outputResources, inputFolderName))
+        return getResource(inputFolderName)!!
+    }
+
     private fun printGreeting(day: Int) {
         if (greetedDay.add(day)) {
+            val inputFolder = getInputFolder()
+
+            val inputs = listOf(
+                getSampleInputFileName(day),
+                getSampleExpectedFileName(day),
+                getRealInputFileName(day)
+            )
+
+            inputs.forEach {
+                println("${ConsoleColors.GREEN}${inputFolder.path.trimStart('/')}/$it${ConsoleColors.RESET}")
+            }
+            println("")
+
             Thread.sleep(10)
             val sb = StringBuilder()
 
             val inset = "Day $day"
-            val header = "*".repeat(22 + inset.length).makeBlinky()
-            sb.appendLine(header)
-            sb.append("*".makeBlinky())
+            val header = "#".repeat(22 + inset.length)
+            sb.appendLine(header.makeBlink())
+            sb.append("#".makeBlink())
             sb.append("${" ".repeat(10)}$inset${" ".repeat(10)}")
-            sb.appendLine("*".makeBlinky())
-            sb.appendLine(header)
+            sb.appendLine("#".makeBlink())
+            sb.appendLine(header.makeBlink())
 
             println(sb.toString())
         }
     }
 }
 
-object ConsoleColors {
-    const val BLACK = "\u001b[0;30m" // BLACK
-    const val RED = "\u001b[0;31m" // RED
-    const val GREEN = "\u001b[0;32m" // GREEN
-    const val YELLOW = "\u001b[0;33m" // YELLOW
-    const val BLUE = "\u001b[0;34m" // BLUE
-    const val PURPLE = "\u001b[0;35m" // PURPLE
-    const val CYAN = "\u001b[0;36m" // CYAN
-    const val WHITE = "\u001b[0;37m" // WHITE
-
-    const val RESET = "\u001b[0m" // Text Reset
-
-    val blinkyColors = listOf(RED, GREEN, YELLOW, BLUE, PURPLE, CYAN)
-
-    fun makeStringBlink(s: String) {
-
-    }
-}
-
-fun String.makeBlinky(): String {
+fun String.makeBlink(): String {
     val sb = StringBuilder()
     this.toList().forEach {
-        sb.append(ConsoleColors.blinkyColors.random() + it + ConsoleColors.RESET)
+        sb.append(ConsoleColors.blinkColors.random() + it + ConsoleColors.RESET)
     }
     return sb.toString()
 }

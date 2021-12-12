@@ -1,7 +1,6 @@
 package solution.day12
 
 import util.Solution
-import util.getInputAsText
 import java.util.*
 
 data class Cave(val name: String) {
@@ -55,7 +54,7 @@ class PathNode(val cave: Cave, val from: PathNode?) {
     }
 }
 
-fun solve1() {
+fun solve1(): Int {
     val input = Solution.getInputAsText()
     val graph = mutableMapOf<Cave, List<Cave>>()
 
@@ -99,10 +98,10 @@ fun solve1() {
             }
         }
     }
-    println(count)
+    return count
 }
 
-fun solve2() {
+fun solve2(): Int {
     val input = Solution.getInputAsText()
     val graph = mutableMapOf<Cave, List<Cave>>()
 
@@ -146,10 +145,10 @@ fun solve2() {
             }
         }
     }
-    println(count)
+    return count
 }
 
 fun main() {
-    Solution.registerForDay(12, ::solve1)
-    Solution.registerForDay(12, ::solve2)
+    Solution.run(12, ::solve1)
+    Solution.run(12, ::solve2)
 }
