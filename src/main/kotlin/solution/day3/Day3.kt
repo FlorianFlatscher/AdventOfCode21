@@ -1,8 +1,6 @@
-package solution
+package solution.day3
 
 import util.getInputAsText
-
-// 2 stars in 00:44:35
 
 private fun level1() {
     val input = getInputAsText(3).lines().map { row ->
