@@ -13,22 +13,27 @@ private fun getSampleInputFileName(day: Int) = "day${day}_sample.txt"
 private fun getSampleExpectedFileName(day: Int) = "day${day}_expected.txt"
 private fun getRealInputFileName(day: Int) = "day${day}_real.txt"
 
+enum class InputType {
+    REAL,
+    SAMPLE
+}
+
 object Solution {
     private var currentInputFile: String? = null
     private var levelCount: Int = 1
     private val greetedDay = mutableSetOf<Int>()
 
-    fun run(day: Int, func: () -> Any?, debug: Int = 0, ) {
+    fun run(day: Int, func: () -> Any?, debug: InputType? = null) {
         ensureInputsAreCreated(day)
         printGreeting(day)
 
-        if (debug == 1) {
+        if (debug == InputType.SAMPLE) {
             currentInputFile = getSampleInputFileName(day)
             func()
             return
         }
 
-        if (debug == 2) {
+        if (debug == InputType.REAL) {
             currentInputFile = getRealInputFileName(day)
             func()
             return
@@ -40,12 +45,14 @@ object Solution {
         currentInputFile = getRealInputFileName(day)
         val res2 = func()
 
-        var checkResult = "NO EXPECTED OUTPUT FOUND"
+        var checkResult = "- NO EXPECTED OUTPUT FOUND"
         var error = false
         var success = false
         if (solution != null) {
             checkResult =
-                if (solution.toString() == res1.toString()) "${ConsoleColors.GREEN + ConsoleColors.BLACK_BACKGROUND_BRIGHT}✅".also{success = true} else "❌".also { error = true }
+                if (solution.toString() == res1.toString()) "${ConsoleColors.GREEN + ConsoleColors.BLACK_BACKGROUND_BRIGHT}✅".also {
+                    success = true
+                } else "❌".also { error = true }
         }
 
         println("${ConsoleColors.BLACK_BACKGROUND_BRIGHT} Level $levelCount $checkResult")
@@ -54,7 +61,7 @@ object Solution {
         println(" real output:   ${if (success) ConsoleColors.PURPLE else ConsoleColors.RESET}$res2${ConsoleColors.RESET}")
         println("")
 
-        levelCount++;
+        levelCount++
     }
 
     fun getInputAsText(): String {
