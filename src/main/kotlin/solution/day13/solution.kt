@@ -1,6 +1,5 @@
 package solution.day13
 
-import util.InputType
 import util.Solution
 
 data class Point(val x: Int, val y: Int)
