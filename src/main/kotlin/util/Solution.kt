@@ -3,9 +3,11 @@ package util
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.sql.Time
 import java.util.*
 import kotlin.io.path.Path
 import kotlin.system.exitProcess
+import kotlin.system.measureTimeMillis
 
 const val inputFolderName = "inputs"
 
@@ -40,10 +42,17 @@ object Solution {
         }
         val solution = getSolutions(day).getOrNull(levelCount - 1)
 
-        currentInputFile = getSampleInputFileName(day)
-        val res1 = func()
-        currentInputFile = getRealInputFileName(day)
-        val res2 = func()
+        var res1: Any?
+        val res1Time = measureTimeMillis {
+            currentInputFile = getSampleInputFileName(day)
+            res1 = func()
+        }
+
+        var res2: Any?
+        val res2Time = measureTimeMillis {
+            currentInputFile = getRealInputFileName(day)
+            res2 = func()
+        }
 
         var checkResult = "- NO EXPECTED OUTPUT FOUND"
         var error = false
@@ -55,8 +64,8 @@ object Solution {
                 } else "❌".also { error = true }
         }
 
-        println("${ConsoleColors.BLACK_BACKGROUND_BRIGHT} Level $levelCount $checkResult")
-        println("${ConsoleColors.RESET} sample output: ${if (error) ConsoleColors.RED else ConsoleColors.RESET}$res1${ConsoleColors.RESET}")
+        println("${ConsoleColors.BLACK_BACKGROUND_BRIGHT} Level $levelCount $checkResult (${res1Time}ms, ${res2Time}ms)")
+        println("${ConsoleColors.RESET} sample output: ${if (error) "${ConsoleColors.RED}$res1 (expected $solution)" else "$res1"}${ConsoleColors.RESET}")
 
         println(" real output:   ${if (success) ConsoleColors.PURPLE else ConsoleColors.RESET}$res2${ConsoleColors.RESET}")
         println("")
