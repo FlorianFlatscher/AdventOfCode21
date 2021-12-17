@@ -42,7 +42,7 @@ fun solve2(): Any? {
 
     val vels = mutableListOf<PVector>()
     for (x in 0..1000) {
-        for (y in -1000..1000) {
+        for (y in -100..100) {
             val res = checkPrope(ta, PVector(x, y))
 
             if (res) {
